@@ -32,7 +32,8 @@
 
 File: www/js/app.js
 
-** 初期化設定
+ - 初期化設定
+
 ```JavaScript
 var appKey    = "YOUR_APPKEY";
 var clientKey = "YOUR_CLIENTKEY";
@@ -103,10 +104,12 @@ var onSuccess = function(position){
 ```
 
 "Store"というクラスのデーターを検索するオブジェクトqueryを作ります.
+
 検索条件は
 query.withinKilometers("geolocation", geoPoint, 5);
 現在地（geoPoint）から５kmの範囲でgeolocationというクラスのキーの値を検索します。
 find()メソッドを利用し、非同期に検索を行います。
+
 findの検索した後のコールバックを定義し、成功する場合、storesにデータが入っていますので。
 表示する詳細を生成、markToMap()メソッドを利用し、地図にマーカーを付けます。
 
@@ -160,7 +163,7 @@ mBaaSデータストアにて、作成＞inportダウンロードしたjsonフ�
  - 方法は以下のように設定
  Google console: https://code.google.com/apis/console
 
-![google key](readme-img/googleapi.JPG "google key")
+![google key](readme-img/googlapi.JPG "google key")
 
 * 動作確認
   - monacaで動作確認する
