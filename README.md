@@ -1,29 +1,28 @@
-、# Monaca x NIFTYCLOUD mobile backend 位置情報検索サンプル
+﻿# Monaca x NIFTY Cloud mobile backend 位置情報検索サンプル
 
 ===
 
 # Overview
 
-こちらはMonacaを利用して、mbaasサーバーに位置情報のデータを検索し、Google Map地図に表示するサンプルです。
-* Android, iOSアプリをHTML, JavaScriptで簡単に作れるツール[Monaca](https://ja.monaca.io/)
-* アプリのサーバー機能を簡単に作れるツール[Nifty cloud mobile backend](http://mb.cloud.nifty.com/) (以下からmBaaS)
+Monacaを用いて作ったアプリから、mobile backendと連携して、位置情報データを検索しGoogle Map地図上に表示するサンプルコードとなります。
+* HTML/CSS/JavaScriptでマルチプラットフォーム（iOS/Android/Windowsなど）にアプリを開発できる統合開発環境[Monaca](https://ja.monaca.io/)
+* スマホアプリのサーバ側機能（プッシュ通知、会員管理、DBなど）をサーバ開発不要で実装できる[NIFTY Cloud mobile backend](http://mb.cloud.nifty.com/?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_map_template)
 
 ![overview](readme-img/overview.JPG "概要図")
 
 ## Demo
 
-* mBaaSサーバー側：位置情報があるデータを用意します(Storeクラスにインポートする)。
-* MonacaでgithubのURL(Download zip file)をインポートし、
-アプリキーとクライントキーを設定し、アプリを起動（プレビュー）します。
-現在地を取得し、現在地から5km範囲のデータを取得し、地図にて表示します。
+* mBaaSサーバー側：事前に、位置情報データを用意します(Storeクラスへインポート)。
+* MonacaでgithubのURL(https://github.com/ncmbadmin/monaca_map_template/archive/master.zip)をインポートし、アプリケーションキーとクライントキーを設定してください。
+* アプリを起動（プレビュー）し、「地図でお店を見る」ボタンを押すと、取得した現在地データをもとに5km範囲のデータを取得し、地図上に表示します。
 
 * トップ画面
 
-![demo2](readme-img/demo1.JPG "登録完了")
+![demo2](readme-img/demo1.JPG "起動画面")
 
-* 位置情報検索を行い、データーを表示
+* 位置情報検索を行い、データを表示
 
-![demo1](readme-img/demo2.JPG "起動画面")
+![demo1](readme-img/demo2.JPG "マップ画面")
 
 
 ## Description
@@ -44,16 +43,17 @@ $(function() {
 });
 ```
 
-上記のコードでキーを指定し、NCMB.initialize(appKey, clientKey), mBaaSサーバーと連携を行います。
+上記のコードでアプリケーションキーとクライアントキーを指定し、
+NCMB.initialize(appKey, clientKey)　でmBaaSサーバと連携を行います。
 
 * 現在地取得
 
-地図検索ボタン処理メソッドに以下のように実装しています
+「地図でお店を見る」ボタンの処理メソッドは、以下のように実装しています。
 ```JavaScript
 navigator.geolocation.getCurrentPosition(onSuccess, onError, null);
 ```
 
-* 現在地取得が成功にonSuccessコールバックは以下のように設定しています。
+* 現在地取得が成功した場合のコールバック、onSuccessは以下のように設定しています。
 
 ```JavaScript
 var onSuccess = function(position){
@@ -103,57 +103,50 @@ var onSuccess = function(position){
 };
 ```
 
-"Store"というクラスのデーターを検索するオブジェクトqueryを作ります.
+"Store"というクラスのデーターを検索するオブジェクトqueryを作ります。
 
-検索条件は
-query.withinKilometers("geolocation", geoPoint, 5);
-現在地（geoPoint）から５kmの範囲でgeolocationというクラスのキーの値を検索します。
-find()メソッドを利用し、非同期に検索を行います。
+検索条件は query.withinKilometers("geolocation", geoPoint, 5); と設定し、geolocationというクラスの中にある、現在地（geoPoint）から5kmの範囲のキーの値を検索します。
+find()メソッドを利用し、非同期にて検索を行います。
 
-findの検索した後のコールバックを定義し、成功する場合、storesにデータが入っていますので。
-表示する詳細を生成、markToMap()メソッドを利用し、地図にマーカーを付けます。
-
+find()した後のコールバックを定義します。成功した場合にはstoresにデータが入っているはずなので、markToMap()メソッドを利用して、地図にマーカーを付けます。
 
 ## Requirement
 
 * Monaca環境
-* Nifty cloud mobile backend Javascript SDK version 1.2.6
-ダウンロード：[Javascript SDK](http://mb.cloud.nifty.com/doc/current/introduction/sdkdownload_javascript.html)
+* NIFTY Cloud mobile backend Javascript SDK version 1.2.6　ダウンロード：[Javascript SDK](http://mb.cloud.nifty.com/doc/current/introduction/sdkdownload_javascript.html?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_map_template)
 
 ## Installation
 
 * Monacaで新規アプリ作成し、プロジェクトをインポートする。
-  - monacaの利用登録する
+  - Monacaの利用登録
     [Monaca](https://ja.monaca.io/)
-![monaca](readme-img/monaca.JPG "新規プロジェクト")
-  - monacaで新規プロジェクトを作成する
+![Monaca](readme-img/monaca.JPG "新規プロジェクト")
+  - Monacaで新規プロジェクトを作成し、プロジェクトのインポートを選択します。
 ![create](readme-img/monaca_new_project.JPG "新規プロジェクト")
+  - 「URLからインポートする」を選択し、URLに https://github.com/ncmbadmin/sample_monaca_login_template/archive/master.zip を指定します。
 ![create](readme-img/monaca_new_project_2.JPG "新規プロジェクト")
 
-* Monacaでアプリ作成する: プロジェクトインポートを選択し、「URLを指定してインポートする」と選び、以下のURLからインポートする。
- https://github.com/ncmbadmin/monaca_login_template/archive/master.zip
-
-![newapp](readme-img/newapp.JPG "新規アプリ作成")
-
 * mobile backendでアプリ作成する
-  - mobile backendで利用登録する
-    [Nifty cloud mobile backend](http://mb.cloud.nifty.com/)
+  - mobile backend 利用登録
+    [NIFTY Cloud mobile backend](http://mb.cloud.nifty.com/?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_map_template)
 ![register](readme-img/register.JPG "登録画面")
+  - mobile backendでアプリ作成する
+![newapp](readme-img/newapp.JPG "新規アプリ作成")
 
 * mobile backend側でデータをインポートする
  - 以下のURLからStore.jsonファイルをダウンロードする。
 https://gist.github.com/ncmbadmin/c2bef258d2a63c40b0b1/archive/e9a844ed6b43d64cfc166b1788975890ff50280a.zip
 
-mBaaSデータストアにて、作成＞inportダウンロードしたjsonファイルを指定し、インポートする。
-![import1](readme-img/import1.JPG "初期化")
+mBaaSデータストアにて、作成 ＞ インポートを選択し、ダウンロードしたjsonファイルを指定してインポートする。
+![import1](readme-img/import1.JPG "JSONインポート")
 
-![import2](readme-img/import2.JPG "初期化")
+![import2](readme-img/import2.JPG "データのインポートダイアログ")
 
 インポートが成功した状態
-![import3](readme-img/import3.JPG "初期化")
+![import3](readme-img/import3.JPG "インポート成功")
 
-* monacaで作成したアプリをmobile backendサーバーと連携させる
-  - monacaでアプリキー、クライアントキーを設定し、初期化を行う
+* Monacaで作成したアプリをmobile backendサーバーと連携させる
+  - Monacaでアプリキー、クライアントキーを設定し、初期化を行う
 ![initialize2](readme-img/appKeyClientKey.JPG "初期化")
 キーをコピーし、追記します。
 ![initialize](readme-img/appKeyClientKey_setting.JPG "初期化")
@@ -166,18 +159,20 @@ mBaaSデータストアにて、作成＞inportダウンロードしたjsonフ�
 ![google key](readme-img/googlapi.JPG "google key")
 
 * 動作確認
-  - monacaで動作確認する
+  - Monacaで動作確認する 
+
 ![demo](readme-img/demo2.JPG "動作確認")
 
 ## Usage
 
-サンプルコードをカスタマイズする、key, value変数を変更していただきます。
-以下のドキュメントを参照し、データ保存・検索・プッシュ通知を入れることができる。
-* [ドキュメント](http://mb.cloud.nifty.com/doc/current/)
-* [ドキュメント・データストア](http://mb.cloud.nifty.com/doc/current/sdkguide/javascript/datastore.html)
-* [ドキュメント・会員管理](http://mb.cloud.nifty.com/doc/current/sdkguide/javascript/user.html)
-* [ドキュメント・プッシュ通知](http://mb.cloud.nifty.com/doc/current/sdkguide/javascript/push.html)
+サンプルコードをカスタマイズすることで、様々な機能を実装できます！
+データ保存・データ検索・会員管理・プッシュ通知などの機能を実装したい場合には、
+以下のドキュメントもご参考ください。
 
+* [ドキュメント](http://mb.cloud.nifty.com/doc/current/?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_map_template)
+* [ドキュメント・データストア](http://mb.cloud.nifty.com/doc/current/sdkguide/javascript/datastore.html?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_map_template)
+* [ドキュメント・会員管理](http://mb.cloud.nifty.com/doc/current/sdkguide/javascript/user.html?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_map_template)
+* [ドキュメント・プッシュ通知](http://mb.cloud.nifty.com/doc/current/sdkguide/javascript/push.html?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_map_template)
 
 ## Contributing
 
@@ -190,4 +185,4 @@ mBaaSデータストアにて、作成＞inportダウンロードしたjsonフ�
 ## License
 
 * MITライセンス
-* Nifty cloud mobile backendのJavascript SDKのライセンス
+* NIFTY Cloud mobile backendのJavascript SDKのライセンス
