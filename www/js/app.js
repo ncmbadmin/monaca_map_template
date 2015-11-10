@@ -1,6 +1,7 @@
 var appKey    = "YOUR_APPKEY";
 var clientKey = "YOUR_CLIENTKEY";
 var storeClassName = "Shop";
+var ncmb = new NCMB(appKey,clientKey);
 
 ///// Called when app launch
 $(function() {
