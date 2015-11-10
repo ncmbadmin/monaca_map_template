@@ -12,8 +12,8 @@ Monacaを用いて作ったアプリから、mobile backendと連携して、位
 
 ## Demo
 
-* mBaaSサーバー側：事前に、位置情報データを用意します(Storeクラスへインポート)。
-* MonacaでgithubのURL(https://github.com/ncmbadmin/monaca_map_template/archive/master.zip)をインポートし、アプリケーションキーとクライントキーを設定してください。
+* mBaaSサーバー側：事前に、位置情報データを用意します(Shopクラスへインポート)。
+* MonacaでgithubのURL(https://github.com/ncmbadmin/monaca_map_template/archive/master.zip )をインポートし、アプリケーションキーとクライントキーを設定してください。
 * アプリを起動（プレビュー）し、「地図でお店を見る」ボタンを押すと、取得した現在地データをもとに5km範囲のデータを取得し、地図上に表示します。
 
 * トップ画面
@@ -27,8 +27,7 @@ Monacaを用いて作ったアプリから、mobile backendと連携して、位
 ## Requirement
 
 * Monaca環境
-* Nifty cloud mobile backend Javascript SDK version 1.2.6　ダウンロード：[Javascript SDK](http://mb.cloud.nifty.com/doc/1.2.6/introduction/sdkdownload_javascript.html?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_data_registration)
-* ※version 2.0.0はまだ準備中です。
+* Nifty cloud mobile backend Javascript SDK version 2.0.2　ダウンロード：[Javascript SDK](http://mb.cloud.nifty.com/doc/current/introduction/sdkdownload_javascript.html?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_data_registration)
 
 ## Installation
 
@@ -89,19 +88,18 @@ File: www/js/app.js
 ```JavaScript
 var appKey    = "YOUR_APPKEY";
 var clientKey = "YOUR_CLIENTKEY";
+var storeClassName = "Shop";
+var ncmb = new NCMB(appKey,clientKey);
 
-///// Called when app launch
-$(function() {
-  NCMB.initialize(appKey, clientKey);
-});
 ```
 
 上記のコードでアプリケーションキーとクライアントキーを指定し、
-NCMB.initialize(appKey, clientKey)　でmBaaSサーバと連携を行います。
+NCMB(appKey, clientKey)　でmBaaSサーバと連携を行います。
 
 * 現在地取得
 
 「地図でお店を見る」ボタンの処理メソッドは、以下のように実装しています。
+
 ```JavaScript
 navigator.geolocation.getCurrentPosition(onSuccess, onError, null);
 ```
@@ -113,12 +111,9 @@ var onSuccess = function(position){
     var location = { lat: position.coords.latitude, lng: position.coords.longitude};
     //mobile backendに登録しているストアを取得し、地図で表示
     //位置情報を検索するクラスのNCMB.Objectを作成する
-    var StoreClass = NCMB.Object.extend(storeClassName);
-    //NCMB.Queryを作成
-    var query = new NCMB.Query(StoreClass);
+    var StoreClass = ncmb.DataStore(storeClassName);
     //位置情報をもとに検索する条件を設定
-    var geoPoint = new NCMB.GeoPoint(location.lat, location.lng);
-    query.withinKilometers("geolocation", geoPoint, 5);
+    var geoPoint = ncmb.GeoPoint(location.lat, location.lng);
     var mapOptions = {
                     center: location,
                     zoom: 14
@@ -127,41 +122,40 @@ var onSuccess = function(position){
     //現在地を地図に追加
     markToMap("現在地", location, map, null);
     //mobile backend上のデータ検索を実行する
-    query.find({
-        success: function(stores) {
-            // 検索が成功した場合の処理
-            for (var i = 0; i < stores.length; i++){
-                var store = stores[i];
-                var storeLocation = store.get("geolocation");
-                var myLatlng = new google.maps.LatLng(storeLocation.latitude, storeLocation.longitude);
-                //CREATE DETAIL
-                var detail = "";
-                var storeName = store.get("name");
-                detail += "<h2>"+ storeName +"</h2>";
-                var storeCapacity = store.get("capacity");
-                var storeLocation = store.get("geolocation");
-                var storeLatLng = new google.maps.LatLng(storeLocation.latitude,storeLocation.longitude);
-                var locationLatLng = new google.maps.LatLng(location.lat,location.lng);
-                var distance = Math.round(google.maps.geometry.spherical.computeDistanceBetween (locationLatLng, storeLatLng));  
-                detail += "<p>距離: "+ distance + "(m)</p>";
-                detail += "<p>席数: " + storeCapacity + "</p>" ;
-                markToMap(detail, myLatlng, map, 'images/marker_mbaas.png');
-            }
-        },
-        error: function(error) {
-            // 検索に失敗した場合の処理
-            alert(error.message);
-        }
-    });
+    StoreClass.withinKilometers("geolocation", geoPoint, 5)
+              .fetchAll()
+              .then(function(stores) {
+                  // 検索が成功した場合の処理
+                  for (var i = 0; i < stores.length; i++){
+                      var store = stores[i];
+                      var storeLocation = store.get("geolocation");
+                      var myLatlng = new google.maps.LatLng(storeLocation.latitude, storeLocation.longitude);
+                      //CREATE DETAIL
+                      var detail = "";
+                      var storeName = store.get("name");
+                      detail += "<h2>"+ storeName +"</h2>";
+                      var storeCapacity = store.get("capacity");
+                      var storeLocation = store.get("geolocation");
+                      var storeLatLng = new google.maps.LatLng(storeLocation.latitude,storeLocation.longitude);
+                      var locationLatLng = new google.maps.LatLng(location.lat,location.lng);
+                      var distance = Math.round(google.maps.geometry.spherical.computeDistanceBetween (locationLatLng, storeLatLng));
+                      detail += "<p>距離: "+ distance + "(m)</p>";
+                      detail += "<p>席数: " + storeCapacity + "</p>" ;
+                      markToMap(detail, myLatlng, map, 'images/marker_mbaas.png');
+                  }
+               })
+              .catch(function(error) {
+                 // 検索に失敗した場合の処理
+                 alert(error.message);
+              });
 };
 ```
 
-"Store"というクラスのデーターを検索するオブジェクトqueryを作ります。
+"Shop"というクラスのデーターを検索するため、StoreClassのfetchAllメソッドを利用します。
+検索条件は StoreClass.withinKilometers("geolocation", geoPoint, 5); と設定し、geolocationというクラスの中にある、現在地（geoPoint）から5kmの範囲のキーの値を検索します。
+fetchAll()メソッドを利用し、非同期にて検索を行います。
 
-検索条件は query.withinKilometers("geolocation", geoPoint, 5); と設定し、geolocationというクラスの中にある、現在地（geoPoint）から5kmの範囲のキーの値を検索します。
-find()メソッドを利用し、非同期にて検索を行います。
-
-find()した後のコールバックを定義します。成功した場合にはstoresにデータが入っているはずなので、markToMap()メソッドを利用して、地図にマーカーを付けます。
+fetchAll()した後のプロミスを定義します。成功した場合にはstoresにデータが入っているはずなので、markToMap()メソッドを利用して、地図にマーカーを付けます。
 
 
 ## Usage
