@@ -8,11 +8,16 @@
     "xcode_version": "6",
     "cordova_version": "4.1",
     "plugin_settings": [],
-    "title-ja": "",
+    "external_plugins": [],
+    "title-ja": "ProjectMap",
     "title-en": "",
-    "description-ja": "",
+    "description-ja": "ProjectMap",
     "description-en": "",
     "category": "User Template",
-    "platform": [],
-    "name": "generated-1439171609-55bed19a7e2193ac05f2c204"
+    "platform": [
+        "android",
+        "ios",
+        "winrt"
+    ],
+    "name": "generated-1466062219-5761f655fd17349c42081a7b"
 }
