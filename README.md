@@ -79,7 +79,10 @@ mBaaSデータストアにて、作成 ＞ インポートを選択し、ダウ�
  - 方法は以下のように設定
  Google console: https://console.cloud.google.com/home/
 
+※Google Maps JavaScript APIを有効にします。
 ![google key](readme-img/googlapi.JPG "google key")
+
+※認証APIキーを作成します。
 ![google key](readme-img/googlapi2.JPG "google key2")
 
 * 動作確認
