@@ -89,15 +89,19 @@ mBaaSデータストアにて、作成 ＞ インポートを選択し、ダウ�
   - Monacaで動作確認する
 
 ※現在位置から登録店の位置情報データを検索し、Google Map地図上に表示します。
+
 ![action](readme-img/action.JPG "動作確認")
 
 ※店の情報内容を参照出来ます。
+
 ![action](readme-img/action1.JPG "動作確認1")
 
 ※航空写真表示出来ます。
+
 ![action](readme-img/action2.JPG "動作確認2")
 
 ※ストリートビュー表示出来ます。
+
 ![action](readme-img/action3.JPG "動作確認3")
 
 ## Description
