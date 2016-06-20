@@ -27,17 +27,26 @@ Monacaを用いて作ったアプリから、mobile backendと連携して、位
 ## Requirement
 
 * Monaca環境
-* Nifty cloud mobile backend Javascript SDK version 2.0.2　ダウンロード：[Javascript SDK](http://mb.cloud.nifty.com/doc/current/introduction/sdkdownload_javascript.html?utm_source=community&utm_medium=referral&utm_campaign=sample_monaca_data_registration)
+* ニフティクラウドmobile backendを利用するために必要なJavaScript SDKは、下記の方法で導入済みです。
+  - 「設定」＞「JS/CSSコンポーネント追加と削除」をクリック
+  - 「ncmb」を入力して｢検索｣ボタンを押す
+  - 「追加｣ボタンを押す
+  -  最新バージョンを選択し ｢インストール開始｣ボタンを押す
+  -  ローダーの設定は｢components/ncmb/ncmb.min.js｣にチェックし｢OK｣ボタンを押す 
+  -  "JS/CSSコンポーネントをプロジェクトに追加しました。" 確認の｢OK｣ボタンを押す
 
 ## Installation
 
-* Monacaで新規アプリ作成し、プロジェクトをインポートする。
+* Monacaでプロジェクトをインポートし、新規アプリ作成する。
   - Monacaの利用登録
     [Monaca](https://ja.monaca.io/)
+
 ![Monaca](readme-img/monaca.JPG "新規プロジェクト")
-  - Monacaで新規プロジェクトを作成し、プロジェクトのインポートを選択します。
+  - Monacaでプロジェクトのインポートを選択し、新規プロジェクトを作成します。
+
 ![create](readme-img/monaca_new_project.JPG "新規プロジェクト")
-  - 「URLからインポートする」を選択し、URLに https://github.com/ncmbadmin/sample_monaca_login_template/archive/master.zip を指定します。
+  - 「URLからインポートする」を選択し、URLに https://github.com/ncmbadmin/monaca_map_template/archive/master.zip を指定します。
+
 ![create](readme-img/monaca_new_project_2.JPG "新規プロジェクト")
 
 * mobile backendでアプリ作成する
@@ -48,7 +57,7 @@ Monacaを用いて作ったアプリから、mobile backendと連携して、位
 ![newapp](readme-img/newapp.JPG "新規アプリ作成")
 
 * mobile backend側でデータをインポートする
- - 以下のURLからStore.jsonファイルをダウンロードする。
+ - 以下のURLからShop.jsonファイルをダウンロードする。
 https://gist.github.com/ncmbadmin/c2bef258d2a63c40b0b1/archive/e9a844ed6b43d64cfc166b1788975890ff50280a.zip
 
 mBaaSデータストアにて、作成 ＞ インポートを選択し、ダウンロードしたjsonファイルを指定してインポートする。
@@ -68,20 +77,33 @@ mBaaSデータストアにて、作成 ＞ インポートを選択し、ダウ�
 * Google map API キーの設定
  - ファイル：index.html
  - 方法は以下のように設定
- Google console: https://code.google.com/apis/console
+ Google console: https://console.cloud.google.com/home/
 
 ![google key](readme-img/googlapi.JPG "google key")
+![google key](readme-img/googlapi2.JPG "google key2")
 
 * 動作確認
   - Monacaで動作確認する
 
-![demo](readme-img/demo2.JPG "動作確認")
+![action](readme-img/action.JPG "動作確認")
+![action](readme-img/action1.JPG "動作確認1")
+![action](readme-img/action2.JPG "動作確認2")
+![action](readme-img/action3.JPG "動作確認3")
 
 ## Description
 
 * コードの説明
 
-File: www/js/app.js
+1) File: `www/index.html`
+
+ - 初期化設定
+ 
+```html
+<script src="https://maps.googleapis.com/maps/api/js?key=******************&sensor=false" type="text/javascript"></script>
+```
+上記のコードでGoogle Maps JavaScript APIキーを指定し、Google Map地図と連携を行います。
+
+2) File: `www/js/app.js`
 
  - 初期化設定
 
@@ -101,7 +123,8 @@ NCMB(appKey, clientKey)　でmBaaSサーバと連携を行います。
 「地図でお店を見る」ボタンの処理メソッドは、以下のように実装しています。
 
 ```JavaScript
-navigator.geolocation.getCurrentPosition(onSuccess, onError, null);
+  //現在地を取得する
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, null);
 ```
 
 * 現在地取得が成功した場合のコールバック、onSuccessは以下のように設定しています。
@@ -152,7 +175,7 @@ var onSuccess = function(position){
 ```
 
 "Shop"というクラスのデーターを検索するため、StoreClassのfetchAllメソッドを利用します。
-検索条件は StoreClass.withinKilometers("geolocation", geoPoint, 5); と設定し、geolocationというクラスの中にある、現在地（geoPoint）から5kmの範囲のキーの値を検索します。
+検索条件は StoreClass.withinKilometers("geolocation", geoPoint, 5); と設定し、geolocationというクラスの中にある、現在地（geoPoint）から5kmの範囲(※現在の位置から任意で設定要)のキーの値を検索します。
 fetchAll()メソッドを利用し、非同期にて検索を行います。
 
 fetchAll()した後のプロミスを定義します。成功した場合にはstoresにデータが入っているはずなので、markToMap()メソッドを利用して、地図にマーカーを付けます。
