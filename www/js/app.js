@@ -17,7 +17,7 @@ var onSuccess = function(position){
     //位置情報を検索するクラスのNCMB.Objectを作成する
     var StoreClass = ncmb.DataStore(storeClassName);
     //位置情報をもとに検索する条件を設定
-    var geoPoint = ncmb.GeoPoint(location.lat, location.lng);
+    var geoPoint = new ncmb.GeoPoint(location.lat, location.lng);
     var mapOptions = {
                     center: location,
                     zoom: 14
